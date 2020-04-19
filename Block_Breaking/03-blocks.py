@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from tkinter import *
 from dataclasses import dataclass
-import time
 import random
+import time
 
 DURATION=0.01         #描画間隔
 PADDLE_X0=750         #パドルの位置(x)
@@ -15,9 +15,10 @@ BALL_VX=5             #ボールの速度(x)
 #パドルの変化しうる色
 COLORS=["blue","red","green","yellow","brown","gray"]
 
+NUM_BLOCKS=7
 BLOCK_X=20            #ブロックの位置(x)
 BLOCK_Y=200            #ブロックの位置(y)
-BLOCK_W=40            #ブロックの幅
+BLOCK_W=20            #ブロックの幅
 BLOCK_H=120           #ブロックの高さ
 
 @dataclass
@@ -91,10 +92,17 @@ def stop_paddle(event):
 
 
 #ブロック
-def make_block(x,y,w=40,h=120,c="green"):
+def make_block(x,y,w=20,h=120,c="green"):
     id = canvas.create_rectangle(x,y,x+w,y+h,
                                  fill=c, outline=c)
     return Block(id,x,y,w,h,c)
+
+def make_blocks(n_rows,x0,y0,w,h,pad=10):
+    blocks=[]
+    for i in range(n_rows):
+        x=x0+i*(w+pad)
+        blocks.append(make_block(x,y0,w,h))
+    return blocks
 
 def delete_block(block):
     canvas.delete(block.id)
@@ -111,9 +119,9 @@ tk.update()
 
 #各オブジェクトの生成
 paddle=make_paddle(PADDLE_X0,PADDLE_Y0)
-ball=make_ball(200,BALL_Y0,10,BALL_VX)
+ball=make_ball(500,BALL_Y0,10,BALL_VX)
 make_walls(0,0,800,600)
-block=make_block(BLOCK_X,BLOCK_Y,BLOCK_W,BLOCK_H)
+blocks=make_blocks(NUM_BLOCKS,BLOCK_X,BLOCK_Y,BLOCK_W,BLOCK_H)
 
 #キーイベントとイベントハンドラを結びつける
 canvas.bind_all("<KeyPress-Up>",up_paddle)
@@ -138,14 +146,16 @@ while 1:
         change_paddle_color(paddle,random.choice(COLORS))
 
     #ボールがブロックに当たったら反射、ブロック消去
-    if block!=None\
-       and ball.x + ball.vx < block.x+block.w\
-       and ball.y < block.y+block.h\
-       and ball.y+ball.d > block.y:
-        ball.vx *= -1
-        delete_block(block)
-        block=None
-    
+    for block in blocks:
+        if block!=None\
+        and ball.x + ball.vx < block.x+block.w\
+        and ball.y < block.y+block.h\
+        and ball.y+ball.d > block.y:
+            ball.vx *= -1
+            delete_block(block)
+            blocks.remove(block) 
+    if blocks ==[]:
+        break
     #
     move_paddle(paddle)
     move_ball(ball)

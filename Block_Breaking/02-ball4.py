@@ -43,7 +43,7 @@ canvas=Canvas(tk,width=800,height=600,bd=0)
 canvas.pack()
 tk.update()
 
-border=Border(0,700,100,500)
+border=Border(100,700,100,500)
 
 make_walls(
     border.left,border.top,

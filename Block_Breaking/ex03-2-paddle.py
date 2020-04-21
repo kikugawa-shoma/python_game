@@ -21,7 +21,7 @@ BLOCK_X=100
 BLOCK_Y=150
 BLOCK_W=100
 BLOCK_H=20
-BLOCK_NUM=5
+BLOCK_NUM=2
 BLOCK_PAD=10
 
 WALL_W=100
@@ -69,7 +69,7 @@ def make_walls(east,west,south,north):
     canvas.create_rectangle(west,north,east,south)
 
 def make_ball(x,y,d,vx,vy,c="black"):
-    id=canvas.create_rectangle(x,y,x+d,y+d,fill=c,outline=c)
+    id=canvas.create_oval(x,y,x+d,y+d,fill=c,outline=c)
     return Ball(id,x,y,d,vx,vy,c)
 
 def move_ball(ball):
@@ -134,6 +134,7 @@ canvas.bind_all("<KeyRelease-Left>",stop_paddle)
 canvas.bind_all("<KeyRelease-Right>",stop_paddle)
 
 canvas.bind_all("<KeyPress-space>",game_start)
+
 
 id_text=canvas.create_text(500,400,text="Press 'SPACE' to start",
                             font=('FixedSys',25))
